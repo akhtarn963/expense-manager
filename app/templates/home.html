@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Dashboard</h1>   
+    
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+            <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Expenses</h5>
+                <p class="card-text">{{ format_money(stats.total_expense) }}</p>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Records</h5>
+                <p class="card-text">{{ stats.total_records }}</p>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Highest Expense</h5>
+                <p class="card-text">{{ format_money(stats.highest_expense) }}</p>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Lowest Expense</h5>
+                <p class="card-text">{{ format_money(stats.lowest_expense) }}</p>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Average Expense</h5>
+                <p class="card-text">{{ format_money(stats.average_expense) }}</p>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <a class="btn btn-primary mb-3 mt-3 float-end" href="{{ url_for('expense.add_expense') }}">Add Expense</a>
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ expense.id }}</td>
+            <td>{{ expense.title }}</td>
+            <td>{{ format_money(expense.amount) }}</td>
+            <td>
+                <span class="badge {{ expense.status_class }}">
+                    {{ expense.status }}
+                </span>
+            </td>
+            <td>
+                <form action="{{ url_for('expense.edit_expense', expense_id=expense.id) }}" method="get" style="display:inline;">
+                    <input class="btn btn-warning btn-sm" type="submit" value="Edit">
+                </form>
+                <form action="{{ url_for('expense.delete_expense', expense_id=expense.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                    <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock %}
