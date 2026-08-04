@@ -1,24 +1,33 @@
-# Expense Manager
+Expense Manager
 
-A Flask-based expense management application built while learning Python and Flask.
-
-## Features
-
+Features
+- User Registration & Login
+- Password Hashing
+- User Profile Management
+- Change Password
 - Expense CRUD
-- SQLite database
+- Expense Categories
+- Dashboard Statistics
+- Authentication & Sessions
 - SQLAlchemy ORM
 - Flask-Migrate
 - Bootstrap UI
-- Dashboard statistics
 
-## Tech Stack
-
+Tech Stack
 - Python
 - Flask
 - SQLAlchemy
-- Flask-Migrate
 - SQLite
-- Bootstrap 5
+- Flask-Migrate
+- Jinja2
+- Bootstrap
+
+Getting Started
+- Clone repository
+- Create virtual environment
+- Install dependencies
+- Run migrations
+- Start the application
 
 ## Installation
 
