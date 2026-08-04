@@ -19,15 +19,43 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{{ url_for('expense.home') }}">Home</a>
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('expense.add_expense') }}">Add Expense</a>
-        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('category.list_categories') }}">Categories</a>
+        </li>
       </ul>
+      <form class="d-flex">
+        {% if g.user %}
+        {% if g.user %}
+      Welcome, {{ g.user.name }}
+    {% endif %}
+    &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="nav-link" href="{{ url_for('expense.profile') }}">Profile</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+        <a class="nav-link" href="{{ url_for('auth.register') }}">Create Account</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+        {% endif %}
+      </form>
     </div>
   </div>
 </nav>
 
 <div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+          {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show mt-3">
+                  {{ message }}
+
+                  <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert">
+                  </button>
+              </div>
+          {% endfor %}
+      {% endif %}
+    {% endwith %}  
+
     {% block content %}
     {% endblock %}
 </div>

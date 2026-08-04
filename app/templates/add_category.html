@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Add Category</h1>
+
+    <form  method="post">
+        <label class="form-label" for="name">Name:</label>
+        <input type="text" id="name" name="name" class="form-control" required>
+        <input type="submit" value="Add Category" class="btn btn-success mt-3">
+    </form>
+{% endblock %}
