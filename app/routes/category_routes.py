@@ -17,7 +17,7 @@ category_bp = Blueprint("category", __name__)
 @login_required
 def list_categories():
     categories = Category.query.all()
-    return render_template("category.html", categories=categories)
+    return render_template("categories/index.html", categories=categories)
 
 @category_bp.route("/add-category", methods=["GET", "POST"])
 @login_required
@@ -37,7 +37,7 @@ def add_category():
         db.session.commit()
         flash("Category added successfully.", "success")
         return redirect(url_for("category.list_categories"))
-    return render_template("add_category.html")
+    return render_template("categories/add.html")
 
 @category_bp.route("/edit-category/<int:category_id>", methods=["GET", "POST"])
 @login_required
@@ -56,7 +56,7 @@ def edit_category(category_id):
         db.session.commit()
         flash("Category updated successfully.", "success")
         return redirect(url_for("category.list_categories"))
-    return render_template("edit_category.html", category=category)
+    return render_template("categories/edit.html", category=category)
 
 @category_bp.route("/delete-category/<int:category_id>", methods=["POST"])
 @login_required

@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layouts/base.html" %}
 {% block content %}
     <h1>Edit Expense</h1>
         <form action="{{ url_for('expense.edit_expense', expense_id=expense.id) }}" method="post">

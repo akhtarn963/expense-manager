@@ -35,7 +35,7 @@ def register():
         flash("Registration successful. Please log in.", "success")
         return redirect(url_for("auth.login"))
 
-    return render_template("register.html")
+    return render_template("auth/register.html")
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -47,12 +47,12 @@ def login():
         if user and check_password_hash(user.password, password):
             session["user_id"] = user.id
             flash("Login successful.", "success")
-            return redirect(url_for("expense.home"))
+            return redirect(url_for("dashboard.home"))
         else:
             flash("Invalid email or password.", "danger")
             return redirect(url_for("auth.login"))
 
-    return render_template("login.html")
+    return render_template("auth/login.html")
 
 @auth_bp.route("/logout")
 def logout():

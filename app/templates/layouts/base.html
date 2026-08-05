@@ -17,10 +17,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('expense.home') }}">Home</a>
+          <a class="nav-link active" aria-current="page" href="{{ url_for('dashboard.home') }}">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('category.list_categories') }}">Categories</a>
+        </li>
+        <li>
+          <a class="nav-link" href="{{ url_for('expense.home') }}">Expenses</a>
         </li>
       </ul>
       <form class="d-flex">
@@ -29,7 +32,7 @@
       Welcome, {{ g.user.name }}
     {% endif %}
     &nbsp;&nbsp;&nbsp;&nbsp;
-        <a class="nav-link" href="{{ url_for('expense.profile') }}">Profile</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a class="nav-link" href="{{ url_for('profile.profile') }}">Profile</a> &nbsp;&nbsp;|&nbsp;&nbsp;
         <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
         {% else %}
         <a class="nav-link" href="{{ url_for('auth.register') }}">Create Account</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
