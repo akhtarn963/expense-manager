@@ -12,6 +12,7 @@ from app.models import Expense, db, Category
 from app.utils import calculate_statistics
 from app.decorators import login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import constants
 
 expense_bp = Blueprint("expense", __name__)
 
@@ -35,7 +36,7 @@ def add_expense():
     if request.method == 'POST':
         category_id = request.form.get('category_id')
         if not category_id:
-            flash("Please select a category.", "danger")
+            flash("Please select a category.", constants.FLASH_DANGER)
             return redirect(url_for("expense.add_expense"))
         expense = Expense(
             title = request.form['title'],
@@ -45,7 +46,7 @@ def add_expense():
         )
         db.session.add(expense)
         db.session.commit()
-        flash("Expense added successfully.", "success")
+        flash("Expense added successfully.", constants.FLASH_SUCCESS)
         return redirect(url_for("expense.home"))
     return render_template("expenses/add.html", categories=categories)
 
@@ -63,7 +64,7 @@ def edit_expense(expense_id):
         expense.amount = request.form["amount"]
         expense.category_id = request.form["category_id"]
         db.session.commit()
-        flash("Expense updated successfully.", "success")
+        flash("Expense updated successfully.", constants.FLASH_SUCCESS)
         return redirect(url_for("expense.home"))
 
     return render_template("expenses/edit.html", expense=expense, categories=categories)
@@ -78,6 +79,6 @@ def delete_expense(expense_id):
     ).first_or_404()
     db.session.delete(expense)
     db.session.commit()
-    flash("Expense deleted successfully.", "success")
+    flash("Expense deleted successfully.", constants.FLASH_SUCCESS)
     return redirect(url_for("expense.home"))
 

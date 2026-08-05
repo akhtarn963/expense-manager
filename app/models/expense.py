@@ -1,6 +1,5 @@
 from app.extensions import db
-
-HIGH_EXPENSE_LIMIT = 3000
+from app.constants import HIGH_EXPENSE_LIMIT
 
 class Expense(db.Model):
     __tablename__ = "expenses"

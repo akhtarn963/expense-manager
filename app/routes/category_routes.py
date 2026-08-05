@@ -10,6 +10,7 @@ from flask import (
 )
 from app.models import Category, db
 from app.decorators import login_required
+from app import constants
 
 category_bp = Blueprint("category", __name__)
 
@@ -30,12 +31,12 @@ def add_category():
                                 db.func.lower(Category.name) == search_name
                             ).first()
         if existing_category:
-            flash("Category already exists.", "warning")
+            flash("Category already exists.", constants.FLASH_WARNING)
             return redirect(url_for("category.add_category"))
         category = Category(name=name)
         db.session.add(category)
         db.session.commit()
-        flash("Category added successfully.", "success")
+        flash("Category added successfully.", constants.FLASH_SUCCESS)
         return redirect(url_for("category.list_categories"))
     return render_template("categories/add.html")
 
@@ -50,11 +51,11 @@ def edit_category(category_id):
             db.func.lower(Category.name) == search_name
         ).first()
         if existing_category and existing_category.id != category_id:
-            flash("Category already exists.", "warning")
+            flash("Category already exists.", constans.FLASH_WARNING)
             return redirect(url_for("category.edit_category", category_id=category_id))
         category.name = name
         db.session.commit()
-        flash("Category updated successfully.", "success")
+        flash("Category updated successfully.", constants.FLASH_SUCCESS)
         return redirect(url_for("category.list_categories"))
     return render_template("categories/edit.html", category=category)
 
@@ -64,5 +65,5 @@ def delete_category(category_id):
     category = Category.query.get_or_404(category_id)
     db.session.delete(category)
     db.session.commit()
-    flash("Category deleted successfully.", "success")
+    flash("Category deleted successfully.", constants.FLASH_SUCCESS)
     return redirect(url_for("category.list_categories"))
