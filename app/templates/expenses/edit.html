@@ -13,6 +13,8 @@
         <input type="text" id="title" name="title" value="{{ expense.title }}" class="form-control" required>
         <label class="form-label" for="amount">Amount:</label>
         <input type="number" id="amount" name="amount" value="{{ expense.amount }}" class="form-control" required>
+        <label class="form-label" for="expense_date">Date:</label>
+        <input type="date" id="expense_date" name="expense_date" class="form-control" value="{{ expense.expense_date }}" required>
 
         <input type="submit" value="Update Expense" class="btn btn-success mt-3">
     </form>

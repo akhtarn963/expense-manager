@@ -13,6 +13,7 @@ from app.utils import calculate_statistics
 from app.decorators import login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import constants
+from datetime import datetime
 
 expense_bp = Blueprint("expense", __name__)
 
@@ -25,7 +26,7 @@ def home():
     return render_template(
         "expenses/index.html",
         expenses=expenses,
-        stats=stats
+        stats=stats        
     )
 
 @expense_bp.route('/add-expense', methods=['GET', 'POST'])
@@ -38,17 +39,22 @@ def add_expense():
         if not category_id:
             flash("Please select a category.", constants.FLASH_DANGER)
             return redirect(url_for("expense.add_expense"))
+        expense_date = datetime.strptime(
+                request.form["expense_date"],
+                "%Y-%m-%d"
+            ).date()
         expense = Expense(
             title = request.form['title'],
             amount = request.form['amount'],
             user_id=g.user.id,
-            category_id=request.form['category_id']
+            category_id=request.form['category_id'],
+            expense_date=expense_date
         )
         db.session.add(expense)
         db.session.commit()
         flash("Expense added successfully.", constants.FLASH_SUCCESS)
         return redirect(url_for("expense.home"))
-    return render_template("expenses/add.html", categories=categories)
+    return render_template("expenses/add.html", categories=categories, today=datetime.now().strftime("%Y-%m-%d"))
 
 @expense_bp.route('/edit-expense/<int:expense_id>', methods=['GET', 'POST'])
 @login_required
@@ -60,9 +66,15 @@ def edit_expense(expense_id):
     ).first_or_404()
     categories = db.session.query(Category).all()
     if request.method == 'POST':
+        expense_date = datetime.strptime(
+                request.form["expense_date"],
+                "%Y-%m-%d"
+            ).date()
         expense.title = request.form["title"]
         expense.amount = request.form["amount"]
         expense.category_id = request.form["category_id"]
+        expense.expense_date = expense_date
+
         db.session.commit()
         flash("Expense updated successfully.", constants.FLASH_SUCCESS)
         return redirect(url_for("expense.home"))
