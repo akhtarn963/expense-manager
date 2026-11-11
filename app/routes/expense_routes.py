@@ -14,19 +14,103 @@ from app.decorators import login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import constants
 from datetime import datetime
+from sqlalchemy import func
 
 expense_bp = Blueprint("expense", __name__)
 
 @expense_bp.route("/expenses")
 @login_required
 def home():  
+    search = request.args.get("search","").strip()
+    category_id = request.args.get("category_id","")
+    date_from = request.args.get("date_from", "").strip()
+    date_to = request.args.get("date_to", "").strip()
+
+    try:
+        start_date = (
+            datetime.strptime(date_from, "%Y-%m-%d").date()
+            if date_from else None
+        )
+
+        end_date = (
+            datetime.strptime(date_to, "%Y-%m-%d").date()
+            if date_to else None
+        )
+
+        if start_date and end_date and start_date > end_date:
+            raise ValueError
+
+    except ValueError:
+        flash(
+            "Please enter valid dates. From Date cannot be after To Date.",
+            constants.FLASH_DANGER
+        )
+        return redirect(url_for("expense.home"))
+
+
+    min_amount = request.args.get("min_amount", "").strip()
+    max_amount = request.args.get("max_amount", "").strip()   
+    try: 
+        min_value = float(min_amount) if min_amount else None
+        max_value = float(max_amount) if max_amount else None
+
+        if min_value is not None and min_value < 0:
+            raise ValueError
+
+        if max_value is not None and max_value < 0:
+            raise ValueError
+
+        if min_value is not None and max_value is not None:
+            if min_value > max_value:
+                raise ValueError
+
+    except ValueError:
+        flash(
+            "Please enter valid amounts. Minimum cannot exceed maximum.",
+            constants.FLASH_DANGER
+        )
+        return redirect(url_for("expense.home"))
+
+    page = request.args.get("page", 1, type=int)
+
+
     expenses = Expense.query.filter_by(user_id=g.user.id).all()
     stats = calculate_statistics(expenses)
-    
+
+    query = Expense.query.filter_by(user_id=g.user.id)
+    if search:
+        query = query.filter(Expense.title.ilike(f"%{search}%"))
+    if category_id:
+        query = query.filter_by(category_id=category_id)
+    if start_date:
+        query = query.filter(Expense.expense_date >= start_date)
+
+    if end_date:
+        query = query.filter(Expense.expense_date <= end_date)
+    if min_value is not None:
+        query = query.filter(Expense.amount >= min_value)
+
+    if max_value is not None:
+        query = query.filter(Expense.amount <= max_value)
+
+    expenses = query.order_by(Expense.expense_date.desc()).paginate(
+        page=page,
+        per_page=3,
+        error_out=False
+    )
+    categories = Category.query.all()
+
     return render_template(
         "expenses/index.html",
         expenses=expenses,
-        stats=stats        
+        stats=stats,
+        search=search,
+        selected_category=category_id,
+        categories=categories,
+        date_from=date_from,
+        date_to=date_to,
+        min_amount=min_amount,
+        max_amount=max_amount
     )
 
 @expense_bp.route('/add-expense', methods=['GET', 'POST'])
